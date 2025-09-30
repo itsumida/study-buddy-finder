@@ -1,0 +1,74 @@
+{% extends 'studybuddy_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
+{% block content %}
+<form method="post" action="{% url 'studybuddy_app:signup' %}">
+    {% csrf_token %}
+
+   
+
+    <!-- Username -->
+    <div class="form-group">
+        <label for="username" class="form-label">Username</label>
+        <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            class="form-control" 
+            required 
+            value="{{ request.POST.username|default:'' }}"
+        >
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="form-control" 
+            required 
+            value="{{ request.POST.email|default:'' }}"
+        >
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+        <label for="password1" class="form-label">Password</label>
+        <input 
+            type="password" 
+            id="password1" 
+            name="password1" 
+            class="form-control" 
+            required
+        >
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group">
+        <label for="password2" class="form-label">Confirm Password</label>
+        <input 
+            type="password" 
+            id="password2" 
+            name="password2" 
+            class="form-control" 
+            required
+        >
+    </div>
+
+    <button type="submit" class="btn-signup">
+        <i class="bi bi-person-plus"></i>
+        Create Account
+    </button>
+</form>
+
+    {% endblock %}
+    
+    {% block extra_js %}
+    <script src="{% static 'js/signup.js' %}"></script>
+{% endblock %}

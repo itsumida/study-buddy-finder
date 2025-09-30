@@ -1,0 +1,157 @@
+{% extends 'studybuddy_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'studybuddy_app:index' %}">StudyBuddy</a>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            {% if user.is_authenticated %}
+                <a href="{% url 'studybuddy_app:inbox' %}" class="nav-btn">
+                    <i class="bi bi-envelope me-1"></i>
+                    Inbox
+                    {% if has_unread %}
+                        <span class="badge bg-danger ms-1">!</span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'studybuddy_app:reviews_list' %}" class="nav-btn reviews">
+                    <i class="bi bi-star-fill me-1"></i>
+                    Reviews
+                </a>
+                
+                <a href="{% url 'studybuddy_app:about' %}" class="nav-btn">About</a>
+                <a href="{% url 'studybuddy_app:find_buddies' %}" class="nav-btn">Find Buddies</a>
+                {% if user.profile %}
+                    <a href="{% url 'studybuddy_app:edit_my_profile' %}" class="nav-btn primary">
+                        <i class="bi bi-person-circle me-1"></i>
+                        My Profile
+                    </a>
+                {% else %}
+                    <a href="{% url 'studybuddy_app:profile_add' %}" class="nav-btn primary">
+                        <i class="bi bi-person-plus me-1"></i>
+                        Add details 
+                    </a>
+                {% endif %}
+                <a href="{% url 'studybuddy_app:logout' %}" class="nav-btn">Logout</a>
+            {% else %}
+                <a href="{% url 'studybuddy_app:reviews_list' %}" class="nav-btn reviews">
+                    <i class="bi bi-star-fill me-1"></i>
+                    Reviews
+                </a>
+                <a href="{% url 'studybuddy_app:login' %}" class="nav-btn">Login</a>
+                <a href="{% url 'studybuddy_app:signup' %}" class="nav-btn primary">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Study Smarter Together</h1>
+                <p class="hero-subtitle">Connect with the perfect study partner for your courses and transform your learning experience</p>
+                <div class="cta-buttons">
+                    {% if user.is_authenticated %}
+                        
+                        <a href="{% url 'studybuddy_app:find_buddies' %}" class="cta-btn primary">
+                            <i class="bi bi-rocket-takeoff"></i>
+                            Find Study Buddies
+                        </a>
+                        <a href="{% url 'studybuddy_app:profile_list' %}" class="cta-btn secondary">
+                            <i class="bi bi-people"></i>
+                            Browse Profiles
+                        </a>
+                    {% else %}
+                        <a href="{% url 'studybuddy_app:signup' %}" class="cta-btn primary">
+                            <i class="bi bi-rocket-takeoff"></i>
+                            Get Started
+                        </a>
+                        <a href="{% url 'studybuddy_app:login' %}" class="cta-btn secondary">
+                            <i class="bi bi-play-circle"></i>
+                            Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Why Choose StudyBuddy?</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card animate-on-scroll">
+                            <div class="feature-icon">
+                                <i class="bi bi-journal-bookmark"></i>
+                            </div>
+                            <h3 class="feature-title">Smart Course Matching</h3>
+                            <p class="feature-text">Our AI-powered algorithm connects you with students taking the same courses for focused and effective study sessions.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card animate-on-scroll">
+                            <div class="feature-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <h3 class="feature-title">Schedule Sync</h3>
+                            <p class="feature-text">Find buddies with matching availability and sync your schedules to make planning study sessions effortless.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card animate-on-scroll">
+                            <div class="feature-icon">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <h3 class="feature-title">Verified Reviews</h3>
+                            <p class="feature-text">Browse ratings and reviews from other students to find reliable and compatible study partners.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">How It Works</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="step-card animate-on-scroll">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">Create Your Profile</h3>
+                            <p class="step-text">Add your courses, study preferences, availability, and learning goals to create a comprehensive profile.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="step-card animate-on-scroll">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">Match with Buddies</h3>
+                            <p class="step-text">Find peers who have the same interests and study together effectively.</p>
+                        </div>
+                    </div>
+            
+                    <div class="col-md-4">
+                        <div class="step-card animate-on-scroll">
+                            <div class="step-number">3</div>
+                            <h3 class="step-title">Study & Succeed</h3>
+                            <p class="step-text">Attend your sessions, collaborate with peers, and achieve your academic goals through effective group study.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    {% endblock %}
+    {% block extra_js %}
+    <script src="{% static 'js/index.js' %}"></script>
+{% endblock %}

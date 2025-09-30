@@ -1,0 +1,17 @@
+* { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { margin: 0; padding: 0; background-color: #f8f9fa; display: flex; min-height: 100vh; }
+    .container { display: flex; flex: 1; max-width: 1200px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .left { flex: 1; background: #6c63ff; color: white; display: flex; align-items: center; justify-content: center; padding: 2rem; flex-direction: column; }
+    .left h2 { font-size: 2rem; margin-bottom: 1rem; }
+    .left p { font-size: 1.2rem; max-width: 300px; text-align: center; }
+    .right { flex: 1; padding: 2rem; }
+    form { display: flex; flex-direction: column; }
+    form label { margin-top: 1rem; font-weight: 500; }
+    form input, form select, form textarea { padding: 0.75rem; border: 1px solid #ccc; border-radius: 8px; margin-top: 0.5rem; }
+    form input[type="file"] { padding: 0.3rem; }
+    .btn { margin-top: 2rem; background: #6c63ff; color: white; border: none; padding: 1rem; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.3s ease; }
+    .btn:hover { background: #554fd8; }
+    .login-link { margin-top: 1rem; text-align: center; }
+    .login-link a { color: #6c63ff; text-decoration: none; }
+    .error { color: red; font-size: 0.9rem; margin-top: 0.3rem; }
+    @media (max-width: 768px) { .container { flex-direction: column; } .left, .right { flex: none; width: 100%; } }

@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages | StudyBuddy</title>
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Chat CSS -->
+    <link rel="stylesheet" href="{% static 'css/inbox.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Your Messages</h1>
+            <p class="page-subtitle">
+                Stay connected with your study buddies and manage your conversations
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mb-4">
+            <a href="{% url 'studybuddy_app:index' %}" class="nav-link">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Inbox Container -->
+        <div class="inbox-container">
+            <div class="inbox-header">
+                <h2 class="inbox-title">
+                    <i class="bi bi-chat-dots"></i> Conversations
+                </h2>
+                <p class="inbox-count">
+                    {% if threads %}
+                        {{ threads|length }} conversation{{ threads|length|pluralize }}
+                    {% else %}
+                        No conversations yet
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if threads %}
+                <!-- Message Threads -->
+                <div class="messages-list">
+                    {% for thread in threads %}
+                        <a href="{% url 'studybuddy_app:chat_thread' user_id=thread.user.id %}" class="message-thread">
+                            <div class="thread-header">
+                                <div class="user-avatar">
+                                    {{ thread.user.username|first|upper }}
+                                </div>
+                                <div class="thread-info">
+                                    <div class="thread-user">{{ thread.user.username }}</div>
+                                    <div class="thread-time">
+                                        {{ thread.last_message.created_at|timesince }} ago
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="thread-preview">
+                                {{ thread.last_message.content|truncatewords:15 }}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-chat-text"></i>
+                    </div>
+                    <h2 class="empty-title">No Messages Yet</h2>
+                    <p class="empty-text">
+                        Start connecting with your study buddies! Send your first message to begin building your study network.
+                    </p>
+                    <a href="{% url 'studybuddy_app:find_buddies' %}" class="btn btn-primary">
+                        <i class="bi bi-people"></i>
+                        Find Study Buddies
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

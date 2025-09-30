@@ -1,0 +1,10 @@
+<!-- templates/messaging/reply.html -->
+<h2>Reply to: {{ original_message.subject }}</h2>
+<p><strong>From:</strong> {{ original_message.sender }}</p>
+<p><strong>Message:</strong> {{ original_message.body }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Send Reply</button>
+</form>

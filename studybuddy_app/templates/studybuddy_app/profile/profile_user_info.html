@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.user.username }}'s Profile | StudyBuddy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/profile_user_info.css' %}">
+
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <a href="{% url 'studybuddy_app:profile_list' %}" class="nav-link">
+            <i class="bi bi-arrow-left"></i> Back to Browse Profiles
+        </a>
+
+        <!-- Profile Container -->
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <a href="{% url 'studybuddy_app:profile_list' %}" class="back-btn">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                
+                <div class="profile-avatar">
+                    {{ profile.user.username|first|upper }}
+                </div>
+                <h1 class="profile-name">{{ profile.user.username }}</h1>
+                <p class="profile-subtitle">StudyBuddy Member since {{ profile.user.date_joined|date:"M Y" }}</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ profile.courses.all|length }}</div>
+                        <div class="stat-label">Course{{ profile.courses.all|length|pluralize }}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ profile.user.date_joined|timesince|slice:":2" }}</div>
+                        <div class="stat-label">Days Active</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">★</div>
+                        <div class="stat-label">Verified Student</div>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated and user != profile.user %}
+                    <div class="profile-actions">
+                        <a href="#message-section" class="btn btn-light" onclick="scrollToMessage()">
+                            <i class="bi bi-chat-dots"></i>
+                            Send Message
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <div class="content-grid">
+                    <!-- Left Column -->
+                    <div>
+                        <!-- Bio Section -->
+                        {% if profile.bio %}
+                            <div class="section">
+                                <h3 class="section-title">
+                                    <i class="bi bi-person-lines-fill"></i>
+                                    About {{ profile.user.username }}
+                                </h3>
+                                <p class="bio-text">{{ profile.bio }}</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Courses Section -->
+                        {% if profile.courses.all %}
+                            <div class="section">
+                                <h3 class="section-title">
+                                    <i class="bi bi-book"></i>
+                                    Courses ({{ profile.courses.all|length }})
+                                </h3>
+                                <div class="courses-grid">
+                                    {% for course in profile.courses.all %}
+                                        <div class="course-card">
+                                            <div class="course-icon">
+                                                <i class="bi bi-journal-bookmark"></i>
+                                            </div>
+                                            <div class="course-code">{{ course.code }}</div>
+                                            <div class="course-name">{{ course.name }}</div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Right Column - Message Section -->
+                    <div>
+                        {% if user.is_authenticated and user != profile.user %}
+                            <div class="message-section" id="message-section">
+                                <div class="message-header">
+                                    <h3 class="message-title">
+                                        <i class="bi bi-envelope-heart"></i>
+                                        Send a Message
+                                    </h3>
+                                    <p class="message-subtitle">Connect with {{ profile.user.username }} and start studying together!</p>
+                                </div>
+
+                                <div class="message-form">
+                                    {% if message_sent %}
+                                        <div class="success-message">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Message sent successfully! {{ profile.user.username }} will get back to you soon.
+                                        </div>
+                                    {% endif %}
+
+                                    <form method="post" id="messageForm">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="content" class="form-label">
+                                                <i class="bi bi-chat-text"></i>
+                                                Your Message
+                                            </label>
+                                            <textarea 
+                                                id="content" 
+                                                name="content" 
+                                                class="form-control" 
+                                                placeholder="Hi {{ profile.user.username }}! I'd love to study together for..."
+                                                required
+                                                maxlength="500"
+                                            ></textarea>
+                                            <div class="char-counter" id="charCounter">0/500 characters</div>
+                                        </div>
+
+                                        <button type="submit" class="btn-send" id="sendBtn">
+                                            <i class="bi bi-send-fill"></i>
+                                            Send Message
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="section">
+                                <h3 class="section-title">
+                                    <i class="bi bi-info-circle"></i>
+                                    Connect with {{ profile.user.username }}
+                                </h3>
+                                {% if not user.is_authenticated %}
+                                    <p class="bio-text">
+                                        <a href="{% url 'studybuddy_app:login' %}" style="color: #667eea; text-decoration: none; font-weight: 600;">Log in</a> 
+                                        to send a message to {{ profile.user.username }} and start studying together!
+                                    </p>
+                                {% else %}
+                                    <p class="bio-text">This is your own profile. You can edit it from your dashboard.</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Character counter
+        const textarea = document.getElementById('content');
+        const charCounter = document.getElementById('charCounter');
+        const sendBtn = document.getElementById('sendBtn');
+
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                const length = this.value.length;
+                charCounter.textContent = `${length}/500 characters`;
+                
+                if (length > 450) {
+                    charCounter.classList.add('warning');
+                } else {
+                    charCounter.classList.remove('warning');
+                }
+                
+                sendBtn.disabled = length === 0 || length > 500;
+            });
+
+            // Form submission
+            document.getElementById('messageForm').addEventListener('submit', function() {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sending...';
+            });
+        }
+
+        // Smooth scroll to message section
+        function scrollToMessage() {
+            document.getElementById('message-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Auto-dismiss success message
+        const successMessage = document.querySelector('.success-message');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.opacity = '0';
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

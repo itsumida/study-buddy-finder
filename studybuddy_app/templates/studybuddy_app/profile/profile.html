@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.user.username }}'s Profile | StudyBuddy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'studybuddy_app:index' %}">StudyBuddy</a>
+<div class="d-flex gap-2 align-items-center">
+    <a href="{% url 'studybuddy_app:index' %}" class="nav-btn primary">
+        <i class="bi bi-house-fill me-1"></i>
+        Home
+    </a>
+    {% if user.profile %}
+        <a href="{% url 'studybuddy_app:edit_my_profile' %}" class="nav-btn primary">
+            <i class="bi bi-eye me-1"></i>
+            Edit Profile
+        </a>
+    {% endif %}
+</div>
+
+            </div>
+        </nav>
+        <!-- Profile Container -->
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    {{ profile.user.username|first|upper }}
+                </div>
+                <h1 class="profile-name">{{ profile.user.username }}</h1>
+                <p class="profile-subtitle">StudyBuddy Member since {{ profile.user.date_joined|date:"M Y" }}</p>
+                
+                {% if user.is_authenticated and user != profile.user %}
+                    <div class="profile-actions">
+                        <a href="{% url 'studybuddy_app:send_message' receiver_id=profile.user.id %}" class="btn btn-light">
+                            <i class="bi bi-chat-dots"></i>
+                            Send Message
+                        </a>
+                        {% if can_review %}
+                            <a href="{% url 'studybuddy_app:leave_review' profile_id=profile.id %}" class="btn btn-primary">
+                                <i class="bi bi-star"></i>
+                                Leave Review
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <div class="profile-grid">
+                    <!-- Left Column -->
+                    <div>
+                        <!-- Bio Section -->
+                        {% if profile.bio %}
+                            <div class="profile-section">
+                                <h3 class="section-title">
+                                    <i class="bi bi-person-lines-fill"></i>
+                                    About
+                                </h3>
+                                <p class="bio-text">{{ profile.bio }}</p>
+                                <p class="bio-text">{{ profile.email }}</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Courses Section -->
+                        {% if profile.courses.all %}
+                            <div class="profile-section">
+                                <h3 class="section-title">
+                                    <i class="bi bi-book"></i>
+                                    Courses ({{ profile.courses.all|length }})
+                                </h3>
+                                <div class="courses-grid">
+                                    {% for course in profile.courses.all %}
+                                        <div class="course-card">
+                                            <div class="course-code">{{ course.code }}</div>
+                                            <div class="course-name">{{ course.name }}</div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <!-- Profile Info -->
+                        <div class="profile-section">
+                            <h3 class="section-title">
+                                <i class="bi bi-info-circle"></i>
+                                Profile Info
+                            </h3>
+                            <div class="info-item">
+                                <i class="bi bi-calendar-plus"></i>
+                                Joined {{ profile.user.date_joined|date:"M d, Y" }}
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-book-half"></i>
+                                {{ profile.courses.all|length }} Course{{ profile.courses.all|length|pluralize }}
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-star-fill"></i>
+                                {{ reviews|length }} Review{{ reviews|length|pluralize }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <h3 class="section-title" style="color: white; margin-bottom: 0;">
+                    <i class="bi bi-star-fill"></i>
+                    Student Reviews
+                </h3>
+                {% if reviews %}
+                    <div class="reviews-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">{{ reviews|length }}</div>
+                            <div class="stat-label">Total Reviews</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">
+                                {% if reviews %}
+                                    {% load custom_filters %}
+                                    {{ reviews|average_rating|floatformat:1 }}
+                                {% else %}
+                                    0.0
+                                {% endif %}
+                            </div>
+                            <div class="stat-label">Average Rating</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    {{ review.reviewer.username|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="reviewer-name">{{ review.reviewer.username }}</div>
+                                    <div class="review-rating">
+                                        {% for i in "12345" %}
+                                            <span class="star {% if forloop.counter > review.rating %}empty{% endif %}">
+                                                <i class="bi bi-star-fill"></i>
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-content">{{ review.content }}</div>
+                        <div class="review-date">{{ review.created_at|timesince }} ago</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-reviews">
+                    <div class="empty-icon">
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <h4>No Reviews Yet</h4>
+                    <p>Be the first to leave a review for {{ profile.user.username }}!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+

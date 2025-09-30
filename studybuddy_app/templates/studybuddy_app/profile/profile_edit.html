@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - StudyBuddy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/profile_edit.css' %}"
+</head>
+<body>
+    <!-- Django Messages -->
+    {% if messages %}
+        <div class="django-messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-2">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'studybuddy_app:index' %}">StudyBuddy</a>
+            <div class="d-flex gap-2 align-items-center">
+                <a href="{% url 'studybuddy_app:index' %}" class="nav-btn">
+                    <i class="bi bi-house-fill me-1"></i>
+                    Home
+                </a>
+                {% if user.profile %}
+                    <a href="{% url 'studybuddy_app:profile' pk=user.profile.pk %}" class="nav-btn primary">
+                        <i class="bi bi-eye me-1"></i>
+                        View profile
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="container">
+            <div class="edit-card">
+                <h1 class="page-title">
+                    <i class="bi bi-person-gear me-2"></i>
+                    Complete your profile
+                </h1>
+                <p class="page-subtitle">Add some information and preferences to find the perfect study buddies</p>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <div class="section-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            Personal Information
+                        </h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label required">First Name</label>
+                                {{ form.fname }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">Last Name</label>
+                                {{ form.lname }}
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+
+                    <!-- Academic Information Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <div class="section-icon">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+                            Academic Information
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Major</label>
+                            {{ form.major }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required">Courses</label>
+                            {{ form.courses }}
+                        </div>
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <div class="section-icon">
+                                <i class="bi bi-chat-text"></i>
+                            </div>
+                            About You
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Bio</label>
+                            {{ form.bio }}
+                        </div>
+                    </div>
+
+                    <!-- Submit Section -->
+                    <div class="submit-section">
+                        <button type="submit" class="btn-submit">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'js/profile_edit.js' %}"></script>
+</body>
+</html>

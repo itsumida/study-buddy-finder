@@ -1,0 +1,130 @@
+{% extends 'studybuddy_app/base.html' %}
+{% load static %}
+{% block extra_css %}    
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="{% static 'css/login.css' %}">
+ {% endblock %}
+{% block content %}
+    <!-- Background shapes -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Main container -->
+    <div class="login-container">
+        <div class="login-grid">
+            <!-- Left side - Branding -->
+            <div class="login-brand">
+                <div class="brand-shapes">
+                    <div class="brand-shape"></div>
+                    <div class="brand-shape"></div>
+                </div>
+                
+                <div class="brand-logo">StudyBuddy</div>
+                <div class="brand-tagline">
+                    Connect with the perfect study partner and transform your learning experience
+                </div>
+                
+                <div class="brand-features">
+                    <div class="brand-feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Smart course matching
+                    </div>
+                    <div class="brand-feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Schedule synchronization
+                    </div>
+                    <div class="brand-feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Verified student reviews
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side - Form -->
+            <div class="login-form-container">
+                <h1 class="form-title">Welcome Back</h1>
+                <p class="form-subtitle">Sign in to continue your learning journey</p>
+
+                <!-- Django Messages -->
+                {% if messages %}
+                    <div class="django-messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <i class="bi bi-{% if message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}-fill"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Form Errors -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                {{ error }}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                        <input 
+                            type="text" 
+                            id="{{ form.username.id_for_label }}" 
+                            name="{{ form.username.name }}" 
+                            class="form-control{% if form.username.errors %} is-invalid{% endif %}" 
+                            value="{{ form.username.value|default:'' }}"
+                            required 
+                            autofocus
+                        >
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                <i class="bi bi-exclamation-circle"></i>
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                        <input 
+                            type="password" 
+                            id="{{ form.password.id_for_label }}" 
+                            name="{{ form.password.name }}" 
+                            class="form-control{% if form.password.errors %} is-invalid{% endif %}" 
+                            required
+                        >
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                <i class="bi bi-exclamation-circle"></i>
+                                {% for error in form.password.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="signup-link">
+                    Don't have an account? <a href="{% url 'studybuddy_app:signup' %}">Create one here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
+    {% block extra_js %}
+    <script src="{% static 'js/login.js' %}"></script>
+{% endblock %}

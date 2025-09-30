@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message to {{ receiver.username }} | StudyBuddy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/send_message.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <a href="{% url 'studybuddy_app:profile_list' %}" class="nav-link">
+            <i class="bi bi-arrow-left"></i> Back to Browse Profiles
+        </a>
+
+        <!-- Message Container -->
+        <div class="message-container">
+            <!-- Message Header -->
+            <div class="message-header">
+                <a href="{% url 'studybuddy_app:profile_list' %}" class="back-btn">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                
+                <div class="receiver-avatar">
+                    {{ receiver.username|first|upper }}
+                </div>
+                <h1 class="message-title">Send Message to {{ receiver.username }}</h1>
+                <p class="message-subtitle">Start a conversation and connect for studying together!</p>
+            </div>
+
+            <!-- Message Form -->
+            <div class="message-form">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="success-message">
+                            <i class="bi bi-check-circle-fill"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" id="messageForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="content" class="form-label">
+                            <i class="bi bi-chat-text"></i>
+                            Your Message to {{ receiver.username }}
+                        </label>
+                        
+                        <!-- Message Suggestions -->
+                        <div class="message-suggestions">
+                            <div class="suggestions-title">
+                                <i class="bi bi-lightbulb"></i> Quick message ideas:
+                            </div>
+                            <div class="suggestion-item" onclick="setMessage('Hi {{ receiver.username }}! I saw we\'re taking similar courses. Would you like to study together?')">
+                                Hi {{ receiver.username }}! I saw we're taking similar courses. Would you like to study together?
+                            </div>
+                            <div class="suggestion-item" onclick="setMessage('Hello! I\'m looking for a study partner and noticed we have overlapping classes. Interested in forming a study group?')">
+                                Hello! I'm looking for a study partner and noticed we have overlapping classes. Interested in forming a study group?
+                            </div>
+                            <div class="suggestion-item" onclick="setMessage('Hey {{ receiver.username }}! Would you be interested in studying together? I think we could help each other out!')">
+                                Hey {{ receiver.username }}! Would you be interested in studying together? I think we could help each other out!
+                            </div>
+                        </div>
+
+                        <textarea 
+                            id="content" 
+                            name="content" 
+                            class="form-control" 
+                            placeholder="Write your message to {{ receiver.username }}..."
+                            required
+                            maxlength="500"
+                        ></textarea>
+                        <div class="char-counter" id="charCounter">0/500 characters</div>
+                    </div>
+
+                    <button type="submit" class="btn-send" id="sendBtn">
+                        <i class="bi bi-send-fill"></i>
+                        Send Message to {{ receiver.username }}
+                    </button>
+                </form>
+
+                <a href="{% url 'studybuddy_app:profile_list' %}" class="btn-secondary">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Chat JS -->
+    <script src="{% static 'js/send_message.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+{% extends 'studybuddy_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/reviews_list.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Community Reviews</h1>
+            <p class="page-subtitle">
+                See what our StudyBuddy community says about their learning experiences and study partners
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mb-4">
+            <a href="{% url 'studybuddy_app:index' %}" class="nav-link">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_reviews }}</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ average_rating|floatformat:1 }}</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ five_star_reviews }}</div>
+                    <div class="stat-label">5-Star Reviews</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ active_reviewers }}</div>
+                    <div class="stat-label">Active Reviewers</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <form method="get" class="filter-controls">
+                <div class="filter-group">
+                    <label for="rating" class="filter-label">Rating:</label>
+                    <select name="rating" id="rating" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Ratings</option>
+                        <option value="5" {% if request.GET.rating == '5' %}selected{% endif %}>5 Stars</option>
+                        <option value="4" {% if request.GET.rating == '4' %}selected{% endif %}>4+ Stars</option>
+                        <option value="3" {% if request.GET.rating == '3' %}selected{% endif %}>3+ Stars</option>
+                        <option value="2" {% if request.GET.rating == '2' %}selected{% endif %}>2+ Stars</option>
+                        <option value="1" {% if request.GET.rating == '1' %}selected{% endif %}>1+ Stars</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sort" class="filter-label">Sort by:</label>
+                    <select name="sort" id="sort" class="filter-select" onchange="this.form.submit()">
+                        <option value="newest" {% if request.GET.sort == 'newest' or not request.GET.sort %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                        <option value="highest" {% if request.GET.sort == 'highest' %}selected{% endif %}>Highest Rated</option>
+                        <option value="lowest" {% if request.GET.sort == 'lowest' %}selected{% endif %}>Lowest Rated</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        {% if page_obj and page_obj.object_list %}
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                {% for review in page_obj %}
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    {{ review.reviewer.username|first|upper }}
+                                </div>
+                                <div class="reviewer-details">
+                                    <h4>{{ review.reviewer.username }}</h4>
+                                    <div class="review-date">{{ review.created_at|timesince }} ago</div>
+                                </div>
+                            </div>
+                            <div class="rating-stars">
+                                {% for i in "12345" %}
+                                    <span class="star {% if forloop.counter > review.rating %}empty{% endif %}">
+                                        <i class="bi bi-star-fill"></i>
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="review-content">
+                            {{ review.content }}
+                        </div>
+
+                        <div class="reviewed-user">
+                            <div class="reviewed-avatar">
+                                {{ review.reviewed_user.username|first|upper }}
+                            </div>
+                            <div class="reviewed-name">
+                                Review for {{ review.reviewed_user.username }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <div class="pagination-container">
+                    <div class="pagination">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-link">
+                                <i class="bi bi-chevron-double-left"></i> First
+                            </a>
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-link">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </a>
+                        {% endif %}
+
+                        <span class="page-link active">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-link">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.rating %}&rating={{ request.GET.rating }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-link">
+                                Last <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-star"></i>
+                </div>
+                <h2 class="empty-title">No Reviews Yet</h2>
+                <p class="empty-text">
+                    Be the first to leave a review! Start connecting with study buddies and share your experiences with the community.
+                </p>
+                <a href="{% url 'studybuddy_app:find_buddies' %}" class="btn btn-primary">
+                    <i class="bi bi-people"></i>
+                    Find Study Buddies
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    {% endblock %}
