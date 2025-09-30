@@ -97,8 +97,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = []  # Empty since you're not using static files
-STATIC_ROOT = None  # Not collecting static files
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Media files
 MEDIA_URL = '/media/'
