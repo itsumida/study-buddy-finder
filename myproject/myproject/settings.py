@@ -32,7 +32,9 @@ ALLOWED_HOSTS = [
     "localhost",
     "study-buddy-finder-owzk.onrender.com"
 ]
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://study-buddy-finder-owzk.onrender.com"
+]
 
 
 
