@@ -16,8 +16,6 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
 
 # Application definition
 INSTALLED_APPS = [
-    'studybuddy_app',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,12 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+
     "crispy_forms",
     "crispy_bootstrap5",
-    
+
     # Local apps
     'studybuddy_app.apps.StudybuddyAppConfig',
 ]
+
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
