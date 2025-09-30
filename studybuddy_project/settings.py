@@ -11,8 +11,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security settings
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', "django-insecure-))pm#_tbrnjdzlgn@vq7kwel!ka@hnq-e&uxaf(30m0h97bs#)")
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "study-buddy-finder-owzk.onrender.com"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://study-buddy-finder-owzk.onrender.com"
+]
+
 
 # Application definition
 INSTALLED_APPS = [
