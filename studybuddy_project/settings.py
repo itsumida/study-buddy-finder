@@ -1,8 +1,19 @@
 """
 Django settings for studybuddy_project project.
 """
-
 import os
+  import dj_database_url
+
+  Then replace the ALLOWED_HOSTS line with:
+  ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
+  And replace the DATABASES section with:
+  DATABASES = {
+      'default': dj_database_url.config(
+          default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+          conn_max_age=600
+      )
+  }
 from pathlib import Path
 
 # Build paths
