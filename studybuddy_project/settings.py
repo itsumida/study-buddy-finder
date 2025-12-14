@@ -14,9 +14,14 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 # ALLOWED_HOSTS - supports environment variable
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+# Always allow Railway domain
+if 'study-buddy-finder-production.up.railway.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('study-buddy-finder-production.up.railway.app')
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://study-buddy-finder-owzk.onrender.com"
+    "https://study-buddy-finder-owzk.onrender.com",
+    "https://study-buddy-finder-production.up.railway.app",
+    "http://study-buddy-finder-production.up.railway.app"
 ]
 
 # Application definition
